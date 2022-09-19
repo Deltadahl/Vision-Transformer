@@ -8,7 +8,6 @@ import wandb
 
 from torchvision import datasets
 from torch.utils.data import DataLoader
-from torchvision.utils import make_grid
 from einops import rearrange
 
 # Other imports
@@ -19,26 +18,31 @@ import matplotlib.pyplot as plt
 import random
 
 
+wandb.init(project="ImageNet1k-10", caption='without Xavier')
+config = wandb.config
+torch.manual_seed(7)
 
-# Functions to display single or a batch of sample images
-def imshow(img):
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()
-    
-def show_batch(dataloader):
-    dataiter = iter(dataloader)
-    images, labels = dataiter.next()    
-    imshow(make_grid(images))
-    
-def show_image(dataloader):
-    dataiter = iter(dataloader)
-    images, labels = dataiter.next()
-    random_num = random.randint(0, len(images)-1)
-    imshow(images[random_num])
-    label = labels[random_num]
-    print(f'Label: {label}, Shape: {images[random_num].shape}')
+LR = 3e-3 # TODO vary the LR (or Batch Size)
+BATCH_SIZE = 64
+N_EPOCHS = int(1e5) # inf :)
+DROPOUT = 0.1
+WEIGHT_DECAY = 0.01
+IMAGE_SIZE = 256
+PATCH_SIZE = IMAGE_SIZE//8 # TODO test with other
+NUM_CLASSES = 10
+IMAGES_PER_CLASS = 1300
+VAL_IMAGES_PER_CLASS = 200
+DATA_DIR = 'ImageNet1k-10'
 
+# Load model
+path_to_model_load = r''
+load_model = False
+
+config.lr = LR
+config.batch_size = BATCH_SIZE
+config.n_epochs = N_EPOCHS
+config.dropout = DROPOUT
+config.weight_decay = WEIGHT_DECAY
 
 class ViT(nn.Module):
     def __init__(self, *, image_size, patch_size, num_classes, dim, depth, heads, mlp_dim, channels=3, dropout=0.1, stochastic_depth_prob=0.5):
@@ -63,15 +67,6 @@ class ViT(nn.Module):
             nn.GELU(),
             nn.Linear(mlp_dim, num_classes)
         )
-        self.init_params()
-
-
-    # Xavier initialization of parameters. This can help, but I didn't see that big of an impact in this case.
-    # TODO remove?
-    def init_params(self):
-        for name, p in self.named_parameters():
-            if p.dim() > 1:
-                nn.init.xavier_uniform_(p)
 
 
     def forward(self, img, training = True):
@@ -245,32 +240,6 @@ class RandomMixup(torch.nn.Module):
 
         return batch, target
 
-
-wandb.init(project="ViT-ImageNet1k_20")
-config = wandb.config
-torch.manual_seed(42)
-
-scaling_factor = 1
-LR = 3e-3/(scaling_factor) # TODO vary the LR (or Batch Size) # TODO parameter sweep during the weekend?
-#BATCH_SIZE_TRAIN = 1024//scaling_factor
-#BATCH_SIZE_VAL = 1024//scaling_factor
-BATCH_SIZE_TRAIN = 64 # 1024 #32
-BATCH_SIZE_VAL = 64 #1024 #32 #TODO test 32 batch size but higher LR!!
-N_EPOCHS = int(1e10) # inf :)
-DROPOUT = 0.1
-WEIGHT_DECAY = 0.01
-NUM_CLASSES = 20
-IMAGE_SIZE = 256
-#DATA_DIR = 'tiny-imagenet-200' # Original images come in shapes of [3,64,64]
-DATA_DIR = 'ImageNet1k-20'
-
-config.lr = LR
-config.batch_size_train = BATCH_SIZE_TRAIN
-config.batch_size_val = BATCH_SIZE_VAL
-config.n_epochs = N_EPOCHS
-config.dropout = DROPOUT
-config.weight_decay = WEIGHT_DECAY
-
 if torch.cuda.is_available():
     device = torch.device("cuda:0")
     print('Running on the GPU')
@@ -278,10 +247,6 @@ else:
     device = torch.device("cpu")
     print('Running on the CPU')
 
-# Define training and validation data paths
-TRAIN_DIR = os.path.join(DATA_DIR, 'train') 
-#VALID_DIR = os.path.join(DATA_DIR, r'val/images')
-VALID_DIR = os.path.join(DATA_DIR, 'train') #TODO
 
 transforms_train = T.Compose([
                 T.Resize((256, 256)), # TODO
@@ -299,78 +264,54 @@ transforms_val = T.Compose([
 ])
 
 
-data_train_temp = datasets.ImageFolder(TRAIN_DIR, transform=transforms_train)
-data_val_temp = datasets.ImageFolder(VALID_DIR, transform=transforms_val)
-'''# train_size_frac = 0.8
-# train_size = int(len(data_train_temp)*train_size_frac)
-# val_size = len(data_train_temp) - train_size'''
+data_train_temp = datasets.ImageFolder(DATA_DIR, transform=transforms_train)
+data_val_temp = datasets.ImageFolder(DATA_DIR, transform=transforms_val)
 
 indices_train = []
 indices_val = []
-NUM_OF_SAMPLES = 1300
-VAL_SIZE = 100
 for i in range(NUM_CLASSES):
-    for j in range(NUM_OF_SAMPLES):
-        if j < NUM_OF_SAMPLES-VAL_SIZE:
-            indices_train.append(i*NUM_OF_SAMPLES+j)
+    for j in range(IMAGES_PER_CLASS):
+        if j < IMAGES_PER_CLASS-VAL_IMAGES_PER_CLASS:
+            indices_train.append(i*IMAGES_PER_CLASS+j)
         else:
-            indices_val.append(i*NUM_OF_SAMPLES+j)
+            indices_val.append(i*IMAGES_PER_CLASS+j)
 
 data_train = torch.utils.data.Subset(data_train_temp, indices_train)
 data_val = torch.utils.data.Subset(data_val_temp, indices_val)
 
-train_loader = DataLoader(data_train, batch_size=BATCH_SIZE_TRAIN, shuffle=True)
-val_loader = DataLoader(data_val, batch_size=BATCH_SIZE_VAL, shuffle=False)
-
-#show_batch(train_loader)
-#show_batch(val_loader)
-#train_loader = DataLoader(data_train, batch_size=BATCH_SIZE_TRAIN, shuffle=True)
-#val_loader = DataLoader(data_val, batch_size=BATCH_SIZE_VAL, shuffle=False)
-
-'''#import torchvision
-orig_set = datasets.Imagefolder(TRAIN_DIR, transform=transforms_train)  # your dataset
-n = len(orig_set)  # total number of examples
-n_test = int(0.1 * n)  # take ~10% for test
-test_set = torch.utils.data.Subset(orig_set, range(n_test))  # take first 10%
-train_set = torch.utils.data.Subset(orig_set, range(n_test, n))  # take the rest 
-
-train_loader = DataLoader(train_set, batch_size=BATCH_SIZE_TRAIN, shuffle=True)
-val_loader = DataLoader(test_set, batch_size=BATCH_SIZE_VAL, shuffle=False)'''
-'''
-data_train = datasets.ImageFolder(TRAIN_DIR, transform=transforms_train)
-train_loader = DataLoader(data_train, batch_size=BATCH_SIZE_TRAIN, shuffle=True)
-data_val = datasets.ImageFolder(VALID_DIR, transform=transforms_val)
-val_loader = DataLoader(data_val, batch_size=BATCH_SIZE_VAL, shuffle=False)'''
-    
+train_loader = DataLoader(data_train, batch_size=BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(data_val, batch_size=BATCH_SIZE, shuffle=False)
 
 mixup = RandomMixup(num_classes=NUM_CLASSES)
 
 def train_epoch(model, optimizer, data_loader):
+    
     total_samples = len(data_loader.dataset)
     model.train()
     total_loss = 0
     start_time_epoch = time.time()
     time_sice_print = time.time()
+
     for i, (data, target) in enumerate(data_loader):
         data = data.to(device)
         target = target.to(device)
         (data, target) = mixup(data, target)     
 
         optimizer.zero_grad()
-        output = model(data)
-        #loss = F.nll_loss(output, target)
+        output = F.log_softmax(model(data), dim=1)
         loss = loss_fun(output, target)
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-        if time.time()-time_sice_print > 60*1:
+
+        # Print info every 60 second.
+        if time.time()-time_sice_print > 60: 
             time_sice_print = time.time()
             print(f'{(time.time()-start_time_epoch)//60} min elapsed this epoch')
             print('[' +  '{:5}'.format(i * len(data)) + '/' + '{:5}'.format(total_samples) +
-                  ' (' + '{:3.0f}'.format(100 * i / len(data_loader)) + '%)]  Loss: ' +
-                  '{:6.4f}'.format(loss.item()))
+                  ' (' + '{:3.0f}'.format(100 * i / len(data_loader)) + '%)]')
             
-    avg_loss = total_loss /((NUM_OF_SAMPLES-VAL_SIZE)*NUM_CLASSES)
+    avg_loss = total_loss /((IMAGES_PER_CLASS-VAL_IMAGES_PER_CLASS)*NUM_CLASSES)
     return avg_loss
 
 
@@ -383,49 +324,32 @@ def evaluate(model, data_loader):
     
     with torch.no_grad():
         for data, target in data_loader:
+
             data = data.to(device)
             target = target.to(device)
-            #output = F.log_softmax(model(data, training=False), dim=1)
-            # TODO change back when ResNet18 is not used
             output = F.log_softmax(model(data), dim=1)
-            loss = F.nll_loss(output, target, reduction='sum')
+            loss = loss_fun(output, target)
             _, pred = torch.max(output, dim=1)
             total_loss += loss.item()
             correct_samples += pred.eq(target).sum()
 
-    avg_loss = total_loss / (VAL_SIZE*NUM_CLASSES)
+    avg_loss = total_loss / (VAL_IMAGES_PER_CLASS*NUM_CLASSES)
     acc = 100*(correct_samples / total_samples)
+
     print('Average val loss: ' + '{:.4f}'.format(avg_loss) +
           '  Accuracy:' + '{:5}'.format(correct_samples) + '/' +
           '{:5}'.format(total_samples) + ' (' +
           '{:4.2f}'.format(100.0 * correct_samples / total_samples) + '%)')
+
     return avg_loss, acc
 
 
 start_time = time.time()
-#model = ViT(image_size=64, patch_size=8, num_classes=NUM_CLASSES, channels=3,
-#            dim=64, depth=16, heads=8, mlp_dim=128, dropout=DROPOUT).to(device)
-
-
-
-# TODO try without depth?
-#model = ViT(image_size=IMAGE_SIZE, patch_size=IMAGE_SIZE//8, num_classes=NUM_CLASSES, channels=3,
-#            dim=64, depth=8, heads=8, mlp_dim=128, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
-
-model = ViT(image_size=IMAGE_SIZE, patch_size=IMAGE_SIZE//8, num_classes=NUM_CLASSES, channels=3,
-            dim=64, depth=16, heads=8, mlp_dim=128, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
-# TODO try with other batch size
-
-
-#from ResNet import ResNet18
-#from ResNet import ResNet18
-#model = ResNet18(num_classes=NUM_CLASSES, dropout=DROPOUT).to(device)
+model = ViT(image_size=IMAGE_SIZE, patch_size=PATCH_SIZE, num_classes=NUM_CLASSES, channels=3,
+            dim=64, depth=8, heads=8, mlp_dim=128, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
 
 wandb.watch(model)
 
-# Load model
-path_to_model_load = r'Models\min_loss_0.7818917236328125_epoch_104.pt'
-load_model = True
 if os.path.exists(path_to_model_load) and load_model:
     print('Loading model.')
     model.load_state_dict(torch.load(path_to_model_load))
@@ -434,21 +358,22 @@ if os.path.exists(path_to_model_load) and load_model:
 loss_fun = nn.CrossEntropyLoss()
 optimizer = optim.AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
 
-min_loss_val = np.inf
+max_acc_val = 0
 for epoch in range(1, N_EPOCHS + 1):
+    
     print('Epoch:', epoch)
     start_time_epoch = time.time()
+    
     loss_train = train_epoch(model, optimizer, train_loader)
     loss_val, acc_val = evaluate(model, val_loader)
+    
     wandb.log({"loss train": loss_train, "loss val": loss_val, "acc val": acc_val, "Time for epoch": (time.time() - start_time_epoch)})
     print('Execution time for Epoch:', '{:5.2f}'.format(time.time() - start_time_epoch), 'seconds')
-    if min_loss_val > loss_val:
-        min_loss_val = loss_val
+    
+    if max_acc_val < acc_val:
+        max_acc_val = acc_val
         print('Saving model')
-        path_to_model_save = r'Models/min_loss_' + str(loss_val) + '_epoch_' + str(epoch) + ".pt"
+        path_to_model_save = r'Saved_models/accuracy_' + str(acc_val.item()) + ".pt"
         torch.save(model.state_dict(), path_to_model_save)
     
 print('Execution time:', '{:5.2f}'.format(time.time() - start_time), 'seconds\n')
-
-
-
