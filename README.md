@@ -97,3 +97,7 @@ Aside from the papers cited in the text, I found the following resourses useful
 * [pytorch-original-transformer](https://github.com/gordicaleksa/pytorch-original-transformer) - Aleksa Gordić
 * [Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) - Jay Alammar
 * [vit-pytorch](https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/vit.py) - Phil Wang
+
+## Licence
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/CCsimon123/Vision-Transformer/blob/main/LICENSE)
