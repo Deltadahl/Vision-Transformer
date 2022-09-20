@@ -25,13 +25,13 @@ wandb.init(project="ImageNet1k-10") # TODO name the run
 config = wandb.config
 torch.manual_seed(7)
 
-LR = 3e-3 # TODO vary the LR (or Batch Size)
+LR = (1/3)*3e-3 # TODO vary the LR (or Batch Size)
 BATCH_SIZE = 64
 N_EPOCHS = int(1e5) # inf :)
 DROPOUT = 0.1
 WEIGHT_DECAY = 0.01
 IMAGE_SIZE = 256
-PATCH_SIZE = IMAGE_SIZE//16 # TODO test with 32
+PATCH_SIZE = IMAGE_SIZE//16
 NUM_CLASSES = 10
 IMAGES_PER_CLASS = 1300
 VAL_IMAGES_PER_CLASS = 200

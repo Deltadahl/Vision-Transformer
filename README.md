@@ -24,6 +24,7 @@ The ViT uses the encoder introduced in the famous [Attention Is All You Need](ht
 The encoder consists of two blocks, a multiheaded self-attention, and a multilayer perceptron. Before each block, a [layernorm](https://arxiv.org/abs/1607.06450) is applied and each block is surrounded by a [residual connection](https://arxiv.org/abs/1512.03385). A residual connection is not needed in theory, but empirically it is found to make a big difference. The residual connection can help the network to learn a desired mapping $H(x)$ by instead letting the network fit another mapping $F(x) := H(x) - x$ and then add $x$ to $F(x)$ to get the desired $H(x)$. 
 
 The self-attention used here is a simple function of three matrices $Q, K, V$ (queries, keys, and values)
+
 $$
 \begin{equation}
 \text{Attention}(Q,K,V)=\text{softmax}(\frac{QK^{\top}}{\sqrt{d_k}})V,
@@ -33,17 +34,21 @@ $$
 where the scaling factor $d_k$ is the dimension of the queries and keys.
 
 Instead of performing a single attention function with $d_{\text{model}}$-dimensional queries, keys, and values, it is found to be beneficial to linearly project all of them $h$ times with different learned linear projections to $d_k$, $d_k$, and $d_v$ dimensions respectively
+
 $$
 \begin{equation}
  \text{MultiHead}(Q,K,V)=\text{Concat}(\text{head}_1,...,\text{head}_h)W^O,
 \end{equation}
 $$
+
 where
+
 $$
 \begin{equation}
  \text{head}_i=\text{Attention}(QW^Q_i,KW^K_i,VW^V_i),
 \end{equation}
 $$
+
 where the projections are parameter matrices $W_i^Q\in\mathbf{R}^{d_{\text{model}}\times d_k},\
 W_i^K\in\mathbf{R}^{d_{\text{model}}\times d_k},\ W_i^V\in\mathbf{R}^{d_{\text{model}}\times d_V},\ W^O\in\mathbf{R}^{hd_v\times d_{\text{model}}}$ and $h$ is the number of heads.
 
@@ -51,12 +56,14 @@ W_i^K\in\mathbf{R}^{d_{\text{model}}\times d_k},\ W_i^V\in\mathbf{R}^{d_{\text{m
 To regularize the model, [dropout](https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf) is used. The model can also use the [stochastic depth regularization technique](https://arxiv.org/abs/1603.09382?context=cs), a training procedure that enables the seemingly contradictory setup to train short networks and use deep networks at test time. This is accomplished by randomly dropping a subset of layers and bypassing them with the identity function during training.
 
 For data augmentation, two quite recent techniques is used, namely [Mixup](https://arxiv.org/abs/1710.09412) and [RandAugment](https://arxiv.org/abs/1909.13719). Mixup constructs virtual training examples 
+
 $$
 \begin{align}
 \widetilde{x} =\ & \lambda x_i + (1-\lambda)x_j, \; \text{where $x_i, x_j$ are raw input vectors},\\
 \widetilde{y} =\ & \lambda y_i + (1-\lambda)y_j, \; \text{where $y_i, y_j$ are one-hot label encodings},
 \end{align}
 $$
+
 $(x_i,\ y_i)$ and $(x_j,\ y_j)$ are two examples drawn randomly from the training data, and $\lambda \in [0,1]$. Therefore, the mixup extends the training distribution by incorporating the prior knowledge that linear interpolations of feature vectors should lead to linear interpolations of the associated targets.
 
 RandAugment transforms the training data with the following transformations: rotate, shear-x, shear-y, translate-y, translate-x, auto-contrast, sharpness, and identity. Which transformations that are used and the magnitude of each transformation are randomly selected.
