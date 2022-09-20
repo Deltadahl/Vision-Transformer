@@ -49,11 +49,17 @@ $$
 \end{equation}
 $$
 
-where the projections are parameter matrices $W_i^Q\in\mathbf{R}^{d_{\text{model}}\times d_k},\
-W_i^K\in\mathbf{R}^{d_{\text{model}}\times d_k},\ W_i^V\in\mathbf{R}^{d_{\text{model}}\times d_V},\ W^O\in\mathbf{R}^{hd_v\times d_{\text{model}}}$ and $h$ is the number of heads.
+where the projections are parameter matrices 
+
+$$
+W_i^Q\in\mathbf{R}^{d_{\text{model}}\times d_k},\
+W_i^K\in\mathbf{R}^{d_{\text{model}}\times d_k},\ W_i^V\in\mathbf{R}^{d_{\text{model}}\times d_V},\ W^O\in\mathbf{R}^{hd_v\times d_{\text{model}}},
+$$
+
+and $h$ is the number of heads.
 
 ## Regularization and data augmentations
-To regularize the model, [dropout](https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf) is used. The model can also use the [stochastic depth regularization technique](https://arxiv.org/abs/1603.09382?context=cs), a training procedure that enables the seemingly contradictory setup to train short networks and use deep networks at test time. This is accomplished by randomly dropping a subset of layers and bypassing them with the identity function during training.
+To regularize the model, [dropout](https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf) and [stochastic depth regularization technique](https://arxiv.org/abs/1603.09382?context=cs) is used. The latter is a training procedure that enables the seemingly contradictory setup to train short networks and use deep networks at test time. This is accomplished by randomly dropping a subset of layers and bypassing them with the identity function during training.
 
 For data augmentation, two quite recent techniques is used, namely [Mixup](https://arxiv.org/abs/1710.09412) and [RandAugment](https://arxiv.org/abs/1909.13719). Mixup constructs virtual training examples 
 
