@@ -88,9 +88,9 @@ RandAugment transforms the training data with the following transformations: rot
 #TODO add actual result
 
 Preliminary results...
-
-<img src="Figures/test.png" width="500"> 
-
+<p align="center">
+<img src="Figures\W&B Chart 9_20_2022, 12_43_10 PM.png" width="600"> 
+</p>
 ## Acknowledgements
 Aside from the papers cited in the text, I found the following resourses useful
 
