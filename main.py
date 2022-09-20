@@ -25,8 +25,8 @@ wandb.init(project="ImageNet1k-10") # TODO name the run
 config = wandb.config
 torch.manual_seed(7)
 
-LR = (1/3)*3e-3 # TODO vary the LR (or Batch Size) (1/3)
-BATCH_SIZE = 64
+LR = (1/3)*3e-3 # TODO in
+BATCH_SIZE = 16 #64
 N_EPOCHS = int(1e5) # inf :)
 DROPOUT = 0.1
 WEIGHT_DECAY = 0.01
@@ -60,18 +60,11 @@ if __name__ == "__main__":
 
     train_loader, val_loader = get_data_loaders(DATA_DIR, NUM_CLASSES, IMAGES_PER_CLASS, VAL_IMAGES_PER_CLASS, BATCH_SIZE)
     mixup = RandomMixup(num_classes=NUM_CLASSES)
-    model = ViT(image_size=IMAGE_SIZE, patch_size=PATCH_SIZE, num_classes=NUM_CLASSES, channels=3,
-                dim=128, depth=6, heads=16, mlp_dim=256, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
-                # TODO more heads (check GPU usage)
-    '''image_size = 256,
-    patch_size = 32,
-    num_classes = 1000,
-    dim = 1024,
-    depth = 6,
-    heads = 16,
-    mlp_dim = 2048,
-    dropout = 0.1,
-    emb_dropout = 0.1'''
+    #model = ViT(image_size=IMAGE_SIZE, patch_size=PATCH_SIZE, num_classes=NUM_CLASSES, channels=3,
+    #            dim=128, depth=6, heads=16, mlp_dim=256, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
+
+    from ResNet import ResNet18
+    model = ResNet18(num_classes=10, dropout=0.1).to(device)
     wandb.watch(model)
 
     # Load saved model

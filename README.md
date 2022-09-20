@@ -85,7 +85,8 @@ RandAugment transforms the training data with the following transformations: rot
 
 #TODO add example figure
 ## Result
-#TODO add actual result
+#TODO add final results
+#TODO compare with ResNet
 
 Preliminary results...
 <p align="center">
