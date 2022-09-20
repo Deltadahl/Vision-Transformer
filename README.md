@@ -1,4 +1,7 @@
 ## Vision Transformer - Explanation and Implementation
+<p align="center">
+<img src="./Figures/vit.gif" width="500px"></img>
+</p>
 This repo explains how the Vision Transformer (ViT) works, and how to implement and train a ViT from scratch in PyTorch.
 
 The dataset that is used is **ImageNet1k** but only 10 classes are used so that the model can be trained on a single GPU in a reasonable time.
@@ -19,11 +22,11 @@ The output of this mapping is concatenated with an extra learnable class [cls] e
 
 Unlike a CNN, a ViT has no inherent way to retrieve position from its input. Therefore a positional embedding is introduced. It could be concatenated with all embedded patches, but that comes with a computational cost, therefore the positional embedding is added to the embedded patches, which empirically gives good results [(Dosovitskiy et al., 2020)](https://arxiv.org/abs/2010.11929).
 After the positional encoding is added the embedded patches is fed into the **Transformer encoder**.
-
+<p align="center">
 <img src="Figures/Vit_fig_from_paper.png" width="800"> 
 
 Figure 1: Model overview [[1]](https://arxiv.org/abs/2010.11929).
-
+<p align="center">
 
 ### Transformer Encoder
 The ViT uses the encoder introduced in the famous [Attention Is All You Need](https://arxiv.org/abs/1706.03762?context=cs) paper, see Figure 1.
@@ -80,8 +83,9 @@ $(x_i,\ y_i)$ and $(x_j,\ y_j)$ are two examples drawn randomly from the trainin
 
 RandAugment transforms the training data with the following transformations: rotate, shear-x, shear-y, translate-y, translate-x, auto-contrast, sharpness, and identity. Which transformations that are used and the magnitude of each transformation are randomly selected.
 
+#TODO add example figure
 ## Result
-#TODO continue here
+#TODO add actual result
 
 Preliminary results...
 
@@ -90,4 +94,6 @@ Preliminary results...
 ## Acknowledgements
 Aside from the papers cited in the text, I found the following resourses useful
 
-[Aleksa Gordić](https://github.com/gordicaleksa)
+* [pytorch-original-transformer](https://github.com/gordicaleksa/pytorch-original-transformer) - Aleksa Gordić
+* [Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) - Jay Alammar
+* [vit-pytorch](https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/vit.py) - Phil Wang
