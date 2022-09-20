@@ -25,7 +25,7 @@ After the positional encoding is added the embedded patches is fed into the **Tr
 <p align="center">
 <img src="Figures/Vit_fig_from_paper.png" width="800"> 
 
-Figure 1: Model overview [[1]](https://arxiv.org/abs/2010.11929).
+Figure 1: Model overview [1](https://arxiv.org/abs/2010.11929).
 <p align="center">
 
 ### Transformer Encoder
