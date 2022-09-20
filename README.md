@@ -1,7 +1,13 @@
-# Vision Transformer - Explanation and Implementation
+## Vision Transformer - Explanation and Implementation
 This repo explains how the Vision Transformer (ViT) works, and how to implement and train a ViT from scratch in PyTorch.
 
 The dataset that is used is **ImageNet1k** but only 10 classes are used so that the model can be trained on a single GPU in a reasonable time.
+
+## Table of Contents
+* [How does the ViT work](#how-does-the-vit-work)
+    * [Transformer Encoder](#transformer-encoder)
+* [Regularization and data augmentation](#regularization-and-data-augmentation)
+* [Result](#result)
 
 ## How does the ViT work? 
 Convolutional neural networks (CNN) dominated the field of computer vision in the years 2012-2020. But in 2020 the paper [An Image is Worth 16x16 Words](https://arxiv.org/abs/2010.11929) showed that ViT could attain state-of-the-art (SOTA) results with less computational cost.
@@ -58,15 +64,15 @@ $$
 
 and $h$ is the number of heads.
 
-## Regularization and data augmentations
+## Regularization and data augmentation
 To regularize the model, [dropout](https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf) and [stochastic depth regularization technique](https://arxiv.org/abs/1603.09382?context=cs) is used. The latter is a training procedure that enables the seemingly contradictory setup to train short networks and use deep networks at test time. This is accomplished by randomly dropping a subset of layers and bypassing them with the identity function during training.
 
 For data augmentation, two quite recent techniques is used, namely [Mixup](https://arxiv.org/abs/1710.09412) and [RandAugment](https://arxiv.org/abs/1909.13719). Mixup constructs virtual training examples 
 
 $$
 \begin{align}
-\widetilde{x} =\ & \lambda x_i + (1-\lambda)x_j, \; \text{where $x_i, x_j$ are raw input vectors},\\
-\widetilde{y} =\ & \lambda y_i + (1-\lambda)y_j, \; \text{where $y_i, y_j$ are one-hot label encodings},
+\widetilde{x} =\ & \lambda x_i + (1-\lambda)x_j, \ \text{where $x_i, x_j$ are raw input vectors},\\
+\widetilde{y} =\ & \lambda y_i + (1-\lambda)y_j, \ \text{where $y_i, y_j$ are one-hot label encodings},
 \end{align}
 $$
 
@@ -80,3 +86,8 @@ RandAugment transforms the training data with the following transformations: rot
 Preliminary results...
 
 <img src="Figures/test.png" width="500"> 
+
+## Acknowledgements
+Aside from the papers cited in the text, I found the following resourses useful
+
+[Aleksa Gordić](https://github.com/gordicaleksa)
