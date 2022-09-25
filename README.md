@@ -24,9 +24,9 @@ Unlike a CNN, a ViT has no inherent way to retrieve position from its input. The
 After the positional encoding is added the embedded patches is fed into the **Transformer encoder**.
 <p align="center">
 <img src="Figures/Vit_fig_from_paper.png" width="800"> 
+</p>
 
-Figure 1: Model overview [1](https://arxiv.org/abs/2010.11929).
-<p align="center">
+Figure 1: Model overview [[1]](https://arxiv.org/abs/2010.11929).
 
 ### Transformer Encoder
 The ViT uses the encoder introduced in the famous [Attention Is All You Need](https://arxiv.org/abs/1706.03762?context=cs) paper, see Figure 1.
@@ -83,16 +83,17 @@ $(x_i,\ y_i)$ and $(x_j,\ y_j)$ are two examples drawn randomly from the trainin
 
 RandAugment transforms the training data with the following transformations: rotate, shear-x, shear-y, translate-y, translate-x, auto-contrast, sharpness, and identity. Which transformations that are used and the magnitude of each transformation are randomly selected.
 
-#TODO add example figure
 ## Result
-#TODO add actual result
-
-Preliminary results...
+The ViT model reached an accuracy of 91.3% on the validation set after it had been trained for $\approx$ 30h on a sigle 3090 GPU. To to set the result in perspective, a ResNet18 was trained for the same time (instead of the same number of epochs) and it reached an accuracy of 96.7%, see Figure 2.
 <p align="center">
-<img src="Figures\W&B Chart 9_20_2022, 12_43_10 PM.png" width="600"> 
+<img src="Figures\W&B Chart 9_25_2022, 3_37_44 PM.png" width="600"> 
 </p>
+
+Figure 2: Result after training. The ViT model reached an accuracy of 91.3%.
+
+
 ## Acknowledgements
-Aside from the papers cited in the text, I found the following resourses useful
+Aside from the papers cited above, I found the following resources useful
 
 * [pytorch-original-transformer](https://github.com/gordicaleksa/pytorch-original-transformer) - Aleksa Gordić
 * [Illustrated Transformer](http://jalammar.github.io/illustrated-transformer/) - Jay Alammar

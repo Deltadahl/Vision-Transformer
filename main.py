@@ -19,19 +19,19 @@ from utils.data_augmentation import RandomMixup
 from utils.data_loaders import get_data_loaders
 from utils.train_and_evaluate import train_epoch, evaluate_epoch
 from ViT_model import ViT
+from ResNet import ResNet18
 
-
-wandb.init(project="ImageNet1k-10") # TODO name the run
+wandb.init(project="ImageNet1k-10")
 config = wandb.config
 torch.manual_seed(7)
 
-LR = (1/3)*3e-3 # TODO vary the LR (or Batch Size) (1/3)
-BATCH_SIZE = 64
+LR = 1e-3
+BATCH_SIZE = 16
 N_EPOCHS = int(1e5) # inf :)
 DROPOUT = 0.1
 WEIGHT_DECAY = 0.01
 IMAGE_SIZE = 256
-PATCH_SIZE = 16 # 32
+PATCH_SIZE = 16
 NUM_CLASSES = 10
 IMAGES_PER_CLASS = 1300
 VAL_IMAGES_PER_CLASS = 200
@@ -62,16 +62,7 @@ if __name__ == "__main__":
     mixup = RandomMixup(num_classes=NUM_CLASSES)
     model = ViT(image_size=IMAGE_SIZE, patch_size=PATCH_SIZE, num_classes=NUM_CLASSES, channels=3,
                 dim=128, depth=6, heads=16, mlp_dim=256, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
-                # TODO more heads (check GPU usage)
-    '''image_size = 256,
-    patch_size = 32,
-    num_classes = 1000,
-    dim = 1024,
-    depth = 6,
-    heads = 16,
-    mlp_dim = 2048,
-    dropout = 0.1,
-    emb_dropout = 0.1'''
+    #model = ResNet18(num_classes=NUM_CLASSES, dropout=DROPOUT).to(device)
     wandb.watch(model)
 
     # Load saved model
@@ -83,7 +74,7 @@ if __name__ == "__main__":
     loss_fun = nn.CrossEntropyLoss()
     optimizer = optim.AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
 
-    max_acc_val = 0
+    max_acc_val = 85
     for epoch in range(1, N_EPOCHS + 1):
         print('Epoch:', epoch)
         start_time_epoch = time.time()

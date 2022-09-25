@@ -37,11 +37,9 @@ class ViT(nn.Module):
         x = rearrange(img, 'b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = p, p2 = p)
         x = self.patch_to_embedding(x)
 
-        # TODO check this, copy the cls-token batchsize times
         cls_tokens = self.cls_token.expand(img.shape[0], -1, -1)
         # prepend the cls token to every image
         x = torch.cat((cls_tokens, x), dim=1)
-        # TODO check if pos-embedding << x
         x += self.pos_embedding
         x = self.transformer(x, training)
 
@@ -69,7 +67,7 @@ class Transformer(nn.Module):
         for layer_num, (attn, ff) in enumerate(self.layers):
             
             # Stochastic depth probability implementation
-            if self.depth > 1 and training:
+            if training:
                 prob_to_skip = self.stochastic_depth_prob_rate_last*layer_num/(self.depth-1)
                 rand_num = np.random.rand()
                 if rand_num < prob_to_skip:
