@@ -84,7 +84,7 @@ $(x_i,\ y_i)$ and $(x_j,\ y_j)$ are two examples drawn randomly from the trainin
 RandAugment transforms the training data with the following transformations: rotate, shear-x, shear-y, translate-y, translate-x, auto-contrast, sharpness, and identity. Which transformations that are used and the magnitude of each transformation are randomly selected.
 
 ## Result
-<<<<<<< HEAD
+
 The ViT model reached an accuracy of 91.3% on the validation set after it had been trained for $\approx$ 30h on a sigle 3090 GPU. To to set the result in perspective, a ResNet18 was trained for the same time (instead of the same number of epochs) and it reached an accuracy of 96.7%, see Figure 2.
 <p align="center">
 <img src="Figures\W&B Chart 9_25_2022, 3_37_44 PM.png" width="600"> 
