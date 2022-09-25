@@ -65,17 +65,11 @@ if __name__ == "__main__":
 
     train_loader, val_loader = get_data_loaders(DATA_DIR, NUM_CLASSES, IMAGES_PER_CLASS, VAL_IMAGES_PER_CLASS, BATCH_SIZE)
     mixup = RandomMixup(num_classes=NUM_CLASSES)
-<<<<<<< HEAD
+
     model = ViT(image_size=IMAGE_SIZE, patch_size=PATCH_SIZE, num_classes=NUM_CLASSES, channels=3,
                 dim=128, depth=6, heads=16, mlp_dim=256, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
     #model = ResNet18(num_classes=NUM_CLASSES, dropout=DROPOUT).to(device)
-=======
-    #model = ViT(image_size=IMAGE_SIZE, patch_size=PATCH_SIZE, num_classes=NUM_CLASSES, channels=3,
-    #            dim=128, depth=6, heads=16, mlp_dim=256, dropout=DROPOUT, stochastic_depth_prob=0).to(device)
 
-    from ResNet import ResNet18
-    model = ResNet18(num_classes=10, dropout=0.1).to(device)
->>>>>>> 71c30245e2e4aed648a3e640eb9f8e8220bb3608
     wandb.watch(model)
 
     # Load saved model
