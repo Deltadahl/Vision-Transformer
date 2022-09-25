@@ -62,7 +62,7 @@ where the projections are parameter matrices
 
 $$
 W_i^Q\in\mathbf{R}^{d_{\text{model}}\times d_k},\
-W_i^K\in\mathbf{R}^{d_{\text{model}}\times d_k},\ W_i^V\in\mathbf{R}^{d_{\text{model}}\times d_V},\ W^O\in\mathbf{R}^{hd_v\times d_{\text{model}}},
+W_i^K\in\mathbf{R}^{d_{\text{model}}\times d_k},\ W_i^V\in\mathbf{R}^{d_{\text{model}}\times d_v},\ W^O\in\mathbf{R}^{hd_v\times d_{\text{model}}},
 $$
 
 and $h$ is the number of heads.
