@@ -94,6 +94,7 @@ class ResNet(nn.Module):
         return out
 
 
+<<<<<<< HEAD
 def ResNet18(num_classes=200, dropout=0.1):
     return ResNet(BasicBlock, [2,2,2,2], num_classes=num_classes, dropout=dropout)
 
@@ -108,3 +109,20 @@ def ResNet101(num_classes=200, dropout=0.1):
 
 def ResNet152(num_classes=200, dropout=0.1):
     return ResNet(Bottleneck, [3,8,36,3])
+=======
+def ResNet18(num_classes=200, dropout=0.0):
+    return ResNet(BasicBlock, [2,2,2,2], num_classes=num_classes, dropout=dropout)
+
+def ResNet34():
+    return ResNet(BasicBlock, [3,4,6,3])
+
+def ResNet50():
+    return ResNet(Bottleneck, [3,4,6,3])
+
+def ResNet101():
+    return ResNet(Bottleneck, [3,4,23,3])
+
+def ResNet152():
+    return ResNet(Bottleneck, [3,8,36,3])
+
+>>>>>>> 71c30245e2e4aed648a3e640eb9f8e8220bb3608
