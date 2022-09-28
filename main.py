@@ -25,13 +25,8 @@ wandb.init(project="ImageNet1k-10")
 config = wandb.config
 torch.manual_seed(7)
 
-<<<<<<< HEAD
 LR = 1e-3
 BATCH_SIZE = 16
-=======
-LR = (1/3)*3e-3 # TODO in
-BATCH_SIZE = 16 #64
->>>>>>> 71c30245e2e4aed648a3e640eb9f8e8220bb3608
 N_EPOCHS = int(1e5) # inf :)
 DROPOUT = 0.1
 WEIGHT_DECAY = 0.01
