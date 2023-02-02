@@ -4,7 +4,7 @@
 </p>
 This repository explains how the Vision Transformer (ViT) works, and how to implement and train a ViT from scratch in PyTorch.
 
-The dataset that is used is **ImageNet1k** but only 10 classes are used so that the model can be trained on a single GPU in a reasonable time.
+The training data for this model comes from a subset of the ImageNet1k dataset, consisting of only 10 classes to ensure efficient training on a single GPU.
 
 ## Table of Contents
 * [How does the ViT work](#how-does-the-vit-work)
