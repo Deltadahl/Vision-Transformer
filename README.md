@@ -36,7 +36,7 @@ The self-attention used here is a simple function of three matrices $Q, K, V$ (q
 
 $$
 \begin{equation}
-\text{Attention}(Q,K,V)=\text{softmax}(\frac{QK^{\top}}{\sqrt{d_k}})V,
+\text{Attention}(Q,K,V)=\text{softmax}\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V,
 \end{equation}
 $$
 
@@ -46,7 +46,7 @@ Instead of performing a single attention function with $d_{\text{model}}$-dimens
 
 $$
 \begin{equation}
- \text{MultiHead}(Q,K,V)=\text{Concat}(\text{head}_1,...,\text{head}_h)W^O,
+ \text{MultiHead}(Q,K,V)=\text{Concat}\left(\text{head}_1,...,\text{head}_h\right)W^O,
 \end{equation}
 $$
 
@@ -54,7 +54,7 @@ where
 
 $$
 \begin{equation}
- \text{head}_i=\text{Attention}(QW^Q_i,KW^K_i,VW^V_i),
+ \text{head}_i=\text{Attention}\left(QW^Q_i,KW^K_i,VW^V_i\right),
 \end{equation}
 $$
 
