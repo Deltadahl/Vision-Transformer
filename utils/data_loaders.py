@@ -8,14 +8,14 @@ from torch.utils.data import DataLoader
 
 def get_data_loaders(data_dir, num_classes, images_per_class, val_images_per_class, batch_size):
     transforms_train = T.Compose([
-                    T.Resize((256, 256)), # TODO
+                    T.Resize((256, 256)),
                     T.RandomHorizontalFlip(),
                     T.RandAugment(),
                     T.ToTensor(),
                     T.Normalize(mean=[0.485, 0.456, 0.406],
                                         std=[0.229, 0.224, 0.225]),])
     transforms_val = T.Compose([
-                    T.Resize((256, 256)), # TODO
+                    T.Resize((256, 256)),
                     T.ToTensor(),
                     T.Normalize(mean=[0.485, 0.456, 0.406],
                                         std=[0.229, 0.224, 0.225]),])
