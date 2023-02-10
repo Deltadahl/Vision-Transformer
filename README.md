@@ -46,7 +46,7 @@ Instead of performing a single attention function with $d_{\text{model}}$-dimens
 
 $$
 \begin{equation}
- \text{MultiHead}(Q,K,V)=\text{Concat}\left(\text{head}_1,...,\text{head}_h\right)W^O,
+ \text{MultiHead}(Q,K,V)=\text{Concat}\left(\text{head}_1,\ldots,\text{head}_h\right)W^O,
 \end{equation}
 $$
 
