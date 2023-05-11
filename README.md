@@ -23,7 +23,7 @@ The output of this mapping is concatenated with an extra learnable class [cls] e
 Unlike a CNN, a ViT has no inherent way to retrieve position from its input. Therefore a positional embedding is introduced. It could be concatenated with all embedded patches, but that comes with a computational cost, therefore the positional embedding is added to the embedded patches, which empirically gives good results [(Dosovitskiy et al., 2020)](https://arxiv.org/abs/2010.11929).
 After the positional encoding is added the embedded patches is fed into the **Transformer encoder**.
 <p align="center">
-<img src="Figures/Vit_fig_from_paper.png" width="800"> 
+<img src="./Figures/Vit_fig_from_paper.png" width="800"> 
 </p>
 
 Figure 1: Model overview [[1]](https://arxiv.org/abs/2010.11929).
@@ -87,7 +87,7 @@ RandAugment transforms the training data with the following transformations: rot
 
 The ViT model reached an accuracy of 91.3% on the validation set after it had been trained for $\approx$ 30h on a sigle 3090 GPU. To to set the result in perspective, a ResNet18 was trained for the same time (instead of the same number of epochs) and it reached an accuracy of 96.7%, see Figure 2.
 <p align="center">
-<img src="Figures\W&B Chart 9_25_2022, 3_37_44 PM.png" width="600"> 
+<img src="./Figures/W&B Chart 9_25_2022, 3_37_44 PM.png" width="600"> 
 </p>
 
 Figure 2: Result after training. The ViT model reached an accuracy of 91.3%.
